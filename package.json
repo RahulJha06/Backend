@@ -1,0 +1,20 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "learning node",
+  "main": "index.js",
+  "scripts": {
+   "start" :" node index",
+   "test" : "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RahulJha06/Backend.git"
+  },
+  "author": "RahulJha",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RahulJha06/Backend/issues"
+  },
+  "homepage": "https://github.com/RahulJha06/Backend#readme"
+}
