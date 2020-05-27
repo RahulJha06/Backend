@@ -1,0 +1,8 @@
+git checkout commitName(hashvalue) filename
+  replaces a file present in the current repository with the same file from a previously specified commit
+
+git reset HEAD filename
+unstages file from the present staging area
+
+git checkout -- filename
+ replaces with file with the file from last commit
