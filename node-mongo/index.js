@@ -4,10 +4,8 @@ const url = 'mongodb://localhost:27017/';
 const dbname = "conFusion";
 const dataop = require('./operations.js');
 
-
 mongoClient.connect(url)
 .then((client) => {
-
   console.log("Connected correctly to server");
   const db = client.db(dbname);
 /*Promises help in achieving a synchronous style of programming where needed while still maintaing the non-blocking IO property of JS*/

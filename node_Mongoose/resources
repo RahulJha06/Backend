@@ -1,0 +1,4 @@
+Mongoose is an external nodeJS library
+It helps with mapping an object used by Javascript to the document format used by mongodb
+It provides a schema that can be utilised to model a Document
+It also provides various methods to validate the data in-accordance with the schema 
