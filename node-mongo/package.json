@@ -1,0 +1,15 @@
+{
+  "name": "mongo",
+  "version": "1.0.0",
+  "description": "Examples utilising mongoClient",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rahul Jha",
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "^3.5.8"
+  }
+}
