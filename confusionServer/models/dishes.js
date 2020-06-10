@@ -1,8 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
-require('mongoose-currency').loadType(mongoose);
-const Currency = mongoose.Types.Currency;
 /*Utilising subDocuments */
 const commentSchema = new Schema({
   rating:{
@@ -18,7 +15,7 @@ const commentSchema = new Schema({
   author:{
     type: String,
     required: true
-  }
+  },
 },{
   timestamp: true
 });
@@ -33,28 +30,7 @@ const dishSchema = new Schema({
     type: String,
     required: true
   },
-  comments : [commentSchema],
-  image:{
-    type: String,
-    required : true
-  },
-  category:{
-    type: String,
-    required: true
-  },
-  label:{
-    type:  String,
-    default: ''
-  }
-  price : {
-    type: Currency,
-    required:true,
-    min:0
-  },
-  featured:{
-    type: Boolean,
-    default: false
-  }
+  comments : [commentSchema]
 },{
   timestamps: true
 });

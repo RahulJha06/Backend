@@ -11,8 +11,12 @@ const app  = express();
 app.use(bodyParser.json());
 const hostname = 'localhost';
 const port = 3000;
-
-
+/*
+function trying(req,res,next){
+  console.log(req.headers);
+  next();
+}
+app.use(trying);*/
 app.use('/dishes',dishRouter);
 app.use('/leaders',leaderRouter);
 app.use('/promotions',promoRouter);
