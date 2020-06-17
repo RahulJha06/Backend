@@ -1,7 +1,7 @@
 const express = require('express'),
       bodyParser = require('body-parser'),
-      dishRouter = express.Router();
-
+      dishRouter = express.Router(),
+      authenticate = require('../authenticate');
 const Dishes = require("../models/dishes.js");
 dishRouter.use(bodyParser.json());
 
@@ -15,15 +15,19 @@ then if in processing this hasnt been taken care of then the server will crash w
 /*
 Well session works
 PS: look into what mergeParams option does
+*/
+/*
 function checking(req,res,next){
+  req.session.user = "Sucker";
   console.log(req.session)
+  next();
 }
 dishRouter.use(checking);
-
 */
 dishRouter.route('/')
 .get((req,res,next)=>{
   Dishes.find({})
+  .populate('comments.author')
   .then((dishes) =>{
     res.statusCode = 200;
     res.setHeader('Content-Type','application/json');
@@ -31,7 +35,7 @@ dishRouter.route('/')
   },(err)=> next(err))
   .catch((err)=>next(err))
 })
-.post((req,res,next)=>{
+.post(authenticate.verifyUser,(req,res,next)=>{
   Dishes.create(req.body)
   .then((dish)=>{
     console.log('Dish Created',dish);
@@ -41,11 +45,11 @@ dishRouter.route('/')
   },(err)=>next(err))
   .catch((err)=> next(err))
 })
-.put((req,res)=>{
+.put(authenticate.verifyUser,(req,res)=>{
   res.statusCode = 403;
   res.send("PUT operation not supported");
 })
-.delete((req,res,next)=>{
+.delete(authenticate.verifyUser,(req,res,next)=>{
   Dishes.remove({})
   .then((resp)=>{
     res.statusCode = 200;
@@ -59,6 +63,7 @@ dishRouter.route('/')
 dishRouter.route('/:dishId')
 .get((req,res,next)=>{
   Dishes.find({_id:req.params.dishId})
+  .populate('comments.author')
   .then((dish)=>{
     res.statusCode = 200;
     res.setHeader('Content-Type','application/json');
@@ -66,7 +71,7 @@ dishRouter.route('/:dishId')
   })
   .catch((err)=> next(err));
 })
-.post((req,res)=>{
+.post(authenticate.verifyUser,(req,res)=>{
   res.send('Post operation not supportedd on /dishes/'+req.params.dishId);
 })
 .put((req,res)=>{
@@ -93,6 +98,7 @@ dishRouter.route('/:dishId')
 dishRouter.route('/:dishId/comment')
 .get((req,res,next)=>{
   Dishes.find({_id : req.params.dishId})
+  .populate('comments.author')
   .then((dish)=>{
     console.log(dish[0].comments)
     res.statusCode = 200;
@@ -101,10 +107,11 @@ dishRouter.route('/:dishId/comment')
   })
   .catch((err)=>{next(err)})
 })
-.post((req,res,next)=>{
+.post(authenticate.verifyUser,(req,res,next)=>{
   Dishes.findOne({_id: req.params.dishId})
   .then((dish)=>{
     if(dish!=null){
+      req.body.author = req.user._id;
       dish.comments.push(req.body);
       dish.save()
       .then((dish)=>{
@@ -126,7 +133,7 @@ dishRouter.route('/:dishId/comment')
   res.setHeader('Content-Type','text/plain');
   res.end('Action Not allowed');
 })
-.delete((req,res,next)=>{
+.delete(authenticate.verifyUser,(req,res,next)=>{
   Dishes.findOne({_id:req.params.dishId})
   .then((dish)=>{
     if(dish != null){
@@ -153,11 +160,17 @@ dishRouter.route('/:dishId/comment')
 dishRouter.route('/:dishId/:commentId')
 .get((req,res,next)=>{
   Dishes.findById(req.params.dishId)
+  .populate('comments.author')
   .then((dish)=>{
     if(dish!=null && dish.comments.id(req.params.commentId)!=null){
       res.statusCode = 200;
       res.setHeader('Content-Type','application/json');
       res.json(dish.comments.id(req.params.commentId));
+    }
+    else if (dish== null){
+      err = new Error('Dish Not found');
+      err.statusCode = 404;
+      next(err);
     }
     else{
       err = new Error('Comment Not found');
@@ -167,12 +180,12 @@ dishRouter.route('/:dishId/:commentId')
   })
   .catch(err => next(err));
 })
-.post((req,res,next)=>{
+.post(authenticate.verifyUser,(req,res,next)=>{
   res.statusCode = 403;
   res.setHeader('Content-Type','application/json');
   res.end('Access Not Grated');
 })
-.put((req, res, next) => {
+.put(authenticate.verifyUser,(req, res, next) => {
     Dishes.findById(req.params.dishId)
     .then((dish) => {
         if (dish != null && dish.comments.id(req.params.commentId) != null) {

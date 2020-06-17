@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 /*Utilising subDocuments */
+
 const commentSchema = new Schema({
   rating:{
     type: Number,
@@ -13,8 +14,8 @@ const commentSchema = new Schema({
     required: true
   },
   author:{
-    type: String,
-    required: true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   },
 },{
   timestamp: true
